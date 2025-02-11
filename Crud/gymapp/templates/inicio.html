@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Mi Gym{% endblock %}
+
+{% block content %}
+    <h2 class="text-center mb-4">🏋️‍♂️ Mis Rutinas</h2>
+
+    <!-- Botón para agregar una nueva rutina -->
+    <div class="d-grid gap-2 mb-3">
+        <a href="{% url 'nueva_rutina' %}" class="btn btn-success">+ Nueva Rutina</a>
+    </div>
+
+    <!-- Lista de rutinas existentes -->
+    <div class="list-group">
+        {% for rutina in rutinas %}
+            <a href="{% url 'detalle_rutina' rutina.id %}" class="list-group-item list-group-item-action">
+                <strong>{{ rutina.nombre }}</strong> - <span class="text-muted">{{ rutina.fecha }}</span>
+            </a>
+        {% empty %}
+            <p class="text-center">No hay rutinas registradas.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

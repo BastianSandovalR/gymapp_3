@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de Rutina - Mi Gym{% endblock %}
+
+{% block content %}
+    <h2 class="text-center">{{ rutina.nombre }}</h2>
+    <p class="text-center text-muted">Fecha: {{ rutina.fecha }}</p>
+
+    <h3 class="mt-4">Series Registradas</h3>
+    
+
+
+    {% for usuario, series in series_por_usuario.items %}
+        <div class="card bg-dark text-white mb-3">
+            <div class="card-header bg-primary">
+                <h4 class="mb-0">{{ usuario.nombre }}</h4>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% regroup series by ejercicio as series_por_ejercicio %}
+                
+                {% for grupo in series_por_ejercicio %}
+                    <li class="list-group-item bg-secondary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong>{{ grupo.grouper }}</strong>
+                            <button class="btn btn-sm btn-light toggle-btn" data-target="ejercicio-{{ usuario.id }}-{{ grupo.grouper.id }}">+</button>
+                        </div>
+                        <ul class="list-group mt-2 d-none" id="ejercicio-{{ usuario.id }}-{{ grupo.grouper.id }}">
+                            {% for serie in grupo.list %}
+                                <li class="list-group-item bg-dark text-white">
+                                    <strong>Serie {{ serie.numero_serie }}:</strong> 
+                                    {{ serie.peso }}kg x {{ serie.repeticiones }} reps
+                                    <br>
+                                    Nota:{{serie.nota}}
+                                    <br>
+                                    <small class="text-muted">{{ serie.nota|default:"Sin nota" }}</small>
+                                    <a href="{% url 'editar_serie' serie.id %}" class="btn btn-warning btn-sm ms-2">✏️ Editar</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% empty %}
+        <p class="text-center">No hay series registradas para esta rutina.</p>
+    {% endfor %}
+
+    <div class="d-grid gap-2 mt-3">
+        <a href="{% url 'inicio' %}" class="btn btn-primary">Volver</a>
+    </div>
+
+    <!-- JavaScript para manejar la expansión de los ejercicios -->
+    <script>
+        document.querySelectorAll('.toggle-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                let targetId = this.getAttribute('data-target');
+                let targetElement = document.getElementById(targetId);
+
+                if (targetElement.classList.contains('d-none')) {
+                    targetElement.classList.remove('d-none');
+                    this.textContent = '−'; // Cambia el botón a "−" cuando se expande
+                } else {
+                    targetElement.classList.add('d-none');
+                    this.textContent = '+'; // Cambia el botón a "+" cuando se colapsa
+                }
+            });
+        });
+    </script>
+{% endblock %}

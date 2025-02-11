@@ -1,0 +1,162 @@
+/* ============================= */
+/* Estilos Generales */
+/* ============================= */
+body {
+    font-family: 'Roboto', sans-serif !important;
+    background: linear-gradient(135deg, #2c3e50, #34495e) !important;
+    color: #ecf0f1 !important;
+    margin: 0;
+    padding: 0;
+}
+
+/* Tarjetas con sombra y bordes suaves */
+.card {
+    border-radius: 10px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+    margin-bottom: 1.5rem !important;
+    background-color: #ffffff !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================= */
+/* Estilos del Formulario */
+/* ============================= */
+form.card {
+    background-color: #ffffff !important;
+    padding: 20px !important;
+    border: 1px solid #bdc3c7 !important;
+    margin-bottom: 2rem !important;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Estilos para etiquetas de formulario */
+.form-label {
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    margin-bottom: 5px !important;
+}
+
+/* Inputs con diseño moderno */
+input.form-control, 
+select.form-control, 
+textarea.form-control {
+    background-color: #ffffff !important;
+    border: 1px solid #bdc3c7 !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    font-size: 1rem !important;
+    color: #2c3e50 !important;
+    transition: all 0.3s ease;
+}
+
+input.form-control:focus, 
+select.form-control:focus, 
+textarea.form-control:focus {
+    border-color: #1abc9c !important;
+    box-shadow: 0 0 8px rgba(26, 188, 156, 0.5) !important;
+}
+
+/* ============================= */
+/* Estilos de Botones */
+/* ============================= */
+.btn {
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-success {
+    background-color: #2ecc71 !important;
+    border: none !important;
+}
+.btn-success:hover {
+    background-color: #27ae60 !important;
+    transform: scale(1.05);
+}
+
+.btn-danger {
+    background-color: #e74c3c !important;
+}
+.btn-danger:hover {
+    background-color: #c0392b !important;
+    transform: scale(1.05);
+}
+
+/* Botón de colapso dinámico */
+.btn-secondary {
+    transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+    background-color: #7f8c8d !important;
+    transform: scale(1.03);
+}
+
+/* ============================= */
+/* Sección de Historial de Ejercicios */
+/* ============================= */
+#historial-ejercicio {
+    display: block !important;  /* Asegura que siempre esté visible */
+    visibility: visible !important; /* Evita que esté oculto */
+    opacity: 1 !important; /* Asegura que no esté transparente */
+    background-color: #276d72;
+}
+
+#lista-historial li {
+    background-color: #626c6d !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+}yy
+#lista-historial li:hover {
+    background-color: #626c6d !important;
+    transform: scale(1.02);
+}
+
+/* ============================= */
+/* Sección de Series Registradas */
+/* ============================= */
+.list-group-item {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+}
+.list-group-item:hover {
+    background-color: #7f8c8d !important;
+    transform: scale(1.02);
+}
+
+/* ============================= */
+/* Animaciones */
+/* ============================= */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================= */
+/* Responsive Design */
+/* ============================= */
+@media (max-width: 768px) {
+    .btn {
+        font-size: 0.9rem;
+    }
+    .form-control {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+    .list-group-item {
+        font-size: 0.9rem;
+    }
+}

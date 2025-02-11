@@ -1,0 +1,108 @@
+/* agregar_series.css */
+
+/* Estilos generales */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+  }
+  
+  /* Tarjetas y contenedores */
+  .card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+  }
+  
+  /* Estilos para el formulario */
+  form.card {
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin-bottom: 2rem;
+  }
+  
+  /* Etiquetas de formulario */
+  .form-label {
+    font-weight: 600;
+    color: #444;
+  }
+  
+  /* Campos de entrada */
+  .form-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+  
+  /* Botones */
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+  }
+  .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    transition: background-color 0.3s ease;
+  }
+  .btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+  }
+  
+  /* List-group items para series */
+  .list-group-item {
+    border: none;
+    background-color: #f8f9fa;
+    color: #333;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    padding: 10px;
+  }
+  .list-group-item.bg-secondary {
+    background-color: #343a40 !important;
+    color: #f8f9fa;
+  }
+  
+  /* Estilo para el botón de colapso (+ / −) */
+  .toggle-sign {
+    font-weight: bold;
+    margin-left: 5px;
+  }
+  
+  /* Contenedor horizontal para series registradas (si se utiliza) */
+  .d-flex.flex-row.overflow-auto {
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  /* Ajustes responsivos para dispositivos móviles */
+  @media (max-width: 768px) {
+    .card {
+      margin: 10px;
+    }
+    .form-control {
+      font-size: 0.9rem;
+    }
+    .btn-sm {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+    }
+  }
+  

@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/agregar_series.css' %}">
+<style>
+    /* Estilos personalizados para un diseño moderno */
+    .custom-card {
+        border-radius: 15px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .custom-form {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 15px;
+    }
+    .form-label {
+        font-weight: bold;
+        color: #34495e;
+    }
+    .btn-custom {
+        background-color: #2ecc71;
+        border: none;
+        font-weight: bold;
+    }
+    .btn-custom:hover {
+        background-color: #27ae60;
+    }
+</style>
+{% endblock %}
+
+{% block title %}Agregar Series - Mi Gym{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Agregar Series a <strong>{{ rutina.nombre }}</strong></h2>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Formulario para agregar serie -->
+            <div class="card custom-card">
+                <div class="card-body custom-form">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Ejercicio</label>
+                            {{ form.ejercicio }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Usuario</label>
+                            {{ form.usuario }}
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Número de Serie</label>
+                                {{ form.numero_serie }}
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Peso (kg)</label>
+                                {{ form.peso }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Repeticiones</label>
+                            {{ form.repeticiones }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nota (Opcional)</label>
+                            {{ form.nota }}
+                        </div>
+                        <button type="submit" class="btn btn-custom w-100">Agregar Serie</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mini registro de historial -->
+    <h3 class="mt-4 text-center">Historial de Ejercicio</h3>
+    <div id="historial-ejercicio" class="card p-3 bg-dark text-white d-none">
+        <ul class="list-group list-group-flush" id="lista-historial"></ul>
+    </div>
+
+    <!-- Sección de series registradas -->
+    <h3 class="mt-4 text-center">Series Registradas</h3>
+    <div class="d-flex flex-column gap-3">
+        {% for usuario, ejercicios in series_por_usuario.items %}
+            <div class="card p-3 bg-light border mb-3">
+                <h4 class="text-primary text-center">{{ usuario.nombre }}</h4>
+                {% for ejercicio, series in ejercicios.items %}
+                    <div class="mb-2">
+                        <!-- Botón de colapso -->
+                        <button class="btn btn-secondary w-100 text-start" data-bs-toggle="collapse" data-bs-target="#ejercicio-{{ usuario.id }}-{{ ejercicio.id }}">
+                            <strong>{{ ejercicio.nombre }}</strong> <span class="toggle-sign">+</span>
+                        </button>
+                        <!-- Contenedor colapsable -->
+                        <div id="ejercicio-{{ usuario.id }}-{{ ejercicio.id }}" class="collapse">
+                            <div class="p-2 mt-2 bg-dark text-white rounded">
+                                <ul class="list-group">
+                                    {% for serie in series %}
+                                        <li class="list-group-item bg-secondary text-white">
+                                            <div><strong>Peso:</strong> {{ serie.peso }} kg</div>
+                                            <div><strong>Repeticiones:</strong> {{ serie.repeticiones }} reps</div>
+                                            <div><strong>Serie:</strong> #{{ serie.numero_serie }}</div>
+                                            <div>
+                                                <small class="text-muted" style="color: white !important; font-size: 0.7em;">
+                                                    {{ serie.nota|default:"Sin nota" }}
+                                                </small>
+                                            </div>
+                                            <a href="{% url 'editar_serie_vivo' serie.id %}" class="btn btn-sm btn-warning w-100 mt-2">Editar</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="d-grid gap-2 mt-3">
+        <a href="{% url 'inicio' %}" class="btn btn-danger">Finalizar Rutina</a>
+    </div>
+</div>
+
+<!-- JavaScript para actualizar el historial -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let selectEjercicio = document.getElementById("id_ejercicio");
+        let selectUsuario = document.getElementById("id_usuario");
+        let historialDiv = document.getElementById("historial-ejercicio");
+        let listaHistorial = document.getElementById("lista-historial");
+
+        function cargarHistorial() {
+            let ejercicioId = selectEjercicio.value;
+            let usuarioId = selectUsuario.value;
+            if (!ejercicioId || !usuarioId) {
+                historialDiv.classList.add("d-none");
+                listaHistorial.innerHTML = "";
+                return;
+            }
+            fetch(`/api/historial/${usuarioId}/${ejercicioId}/?rutina_id={{ rutina.id }}`)
+                .then(response => response.json())
+                .then(data => {
+                    listaHistorial.innerHTML = "";
+                    if (data.length > 0) {
+                        historialDiv.classList.remove("d-none");
+                        data.forEach(rutina => {
+                            let rutinaItem = document.createElement("li");
+                            rutinaItem.classList.add("list-group-item", "bg-secondary", "text-white");
+                            rutinaItem.innerHTML = `<strong>Rutina del ${rutina.fecha}</strong><br>`;
+                            rutina.series.forEach((serie, index) => {
+                                let numeroSerie = (typeof serie.numero_serie !== "undefined" && serie.numero_serie !== null)
+                                    ? serie.numero_serie : (index + 1);
+                                let serieInfo = document.createElement("p");
+                                serieInfo.innerHTML = `<strong>Peso:</strong> ${serie.peso} kg, <strong>Reps:</strong> ${serie.repeticiones}, <strong>Serie:</strong> #${numeroSerie}<br>
+                                                       <small class="text-muted" style="color: white !important; font-size: 0.7em;">Nota: ${serie.nota || "Sin nota"}</small>`;
+                                rutinaItem.appendChild(serieInfo);
+                            });
+                            listaHistorial.appendChild(rutinaItem);
+                        });
+                    } else {
+                        historialDiv.classList.add("d-none");
+                    }
+                })
+                .catch(error => console.error("Error al cargar historial:", error));
+        }
+        
+        historialDiv.classList.add("d-none");
+        if (selectEjercicio) selectEjercicio.addEventListener("change", cargarHistorial);
+        if (selectUsuario) selectUsuario.addEventListener("change", cargarHistorial);
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var collapses = document.querySelectorAll('.collapse');
+        collapses.forEach(function(collapseEl) {
+            collapseEl.addEventListener('shown.bs.collapse', function () {
+                var targetId = collapseEl.id;
+                var toggleButton = document.querySelector('[data-bs-target="#' + targetId + '"] .toggle-sign');
+                if (toggleButton) {
+                    toggleButton.textContent = "−";
+                }
+            });
+            collapseEl.addEventListener('hidden.bs.collapse', function () {
+                var targetId = collapseEl.id;
+                var toggleButton = document.querySelector('[data-bs-target="#' + targetId + '"] .toggle-sign');
+                if (toggleButton) {
+                    toggleButton.textContent = "+";
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    /* Mejor adaptación para móviles */
+    .card {
+        border-radius: 10px;
+    }
+    .list-group-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .btn-sm {
+        font-size: 0.85rem;
+        padding: 5px 10px;
+    }
+    .overflow-auto {
+        white-space: nowrap;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+    /* Reduce el tamaño del campo de nota */
+    #id_nota {
+        width: 100%;
+        max-width: 300px;
+        height: 40px;
+        padding: 5px;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}

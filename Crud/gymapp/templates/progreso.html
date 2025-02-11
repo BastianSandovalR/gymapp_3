@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Progreso - Mi Gym{% endblock %}
+
+{% block content %}
+<h2 class="text-center">📊 Progreso en el Gimnasio</h2>
+
+<form id="form-progreso" class="mb-3">
+    <label>Selecciona Usuario:</label>
+    <select id="usuario" class="form-select">
+        {% for usuario in usuarios %}
+            <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
+        {% endfor %}
+    </select>
+
+    <label class="mt-3">Selecciona Ejercicio:</label>
+    <select id="ejercicio" class="form-select">
+        {% for ejercicio in ejercicios %}
+            <option value="{{ ejercicio.id }}">{{ ejercicio.nombre }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="button" class="btn btn-primary mt-3" onclick="cargarGrafico()">Ver Progreso</button>
+</form>
+
+<!-- Gráfico -->
+<canvas id="graficoProgreso"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function cargarGrafico() {
+        let usuarioId = document.getElementById('usuario').value;
+        let ejercicioId = document.getElementById('ejercicio').value;
+
+        fetch(`/progreso/datos/?usuario_id=${usuarioId}&ejercicio_id=${ejercicioId}`)
+        .then(response => response.json())
+        .then(data => {
+            let ctx = document.getElementById('graficoProgreso').getContext('2d');
+            if (window.myChart) {
+                window.myChart.destroy();  // Para evitar superposición de gráficos
+            }
+            window.myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.fechas,
+                    datasets: [
+                        {
+                            label: 'Peso (kg)',
+                            data: data.pesos,
+                            borderColor: 'blue',
+                            backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Repeticiones',
+                            data: data.repeticiones,
+                            borderColor: 'green',
+                            backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        });
+    }
+</script>
+{% endblock %}

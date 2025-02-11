@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Serie - Mi Gym{% endblock %}
+
+{% block content %}
+<h2 class="text-center">✏️ Editar Serie</h2>
+<form method="post" class="card p-4 bg-secondary">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Guarda Cambios</button>
+</form>
+
+<div class="d-grid gap-2 mt-3">
+    <a href="{% url 'detalle_rutina' serie.rutina.id %}" class="btn btn-danger">Cancelar</a>
+</div>
+{% endblock %}
